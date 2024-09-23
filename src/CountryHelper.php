@@ -6,16 +6,16 @@ use Locale;
 
 class CountryHelper
 	{
-		public static function byLangCode (?string $langCode):?string
-			{
-				$langCode=trim ($langCode);
-				return $langCode?Locale::getDisplayRegion ($langCode,'en'):null;
-			}
-		
 		public static function byIP (string $ip):?string
 			{
 				$locale=trim (shell_exec ("geoiplookup $ip | grep -oE ':\s+\S+\,' | grep -oE '[[:alpha:]]+'"));
-				return $locale?Locale::getDisplayRegion ($locale.'_'.$locale,'en'):null;
+				return $locale?self::byLangCode ($locale.'_'.$locale,'en'):null;
+			}
+		
+		public static function byLangCode (?string $langCode):?string
+			{
+				$langCode=trim ($langCode);
+				return $langCode?self::filterName (Locale::getDisplayRegion ($langCode,'en')):null;
 			}
 		
 		public static function filterName (?string $existsCountry)/*:?string*/
